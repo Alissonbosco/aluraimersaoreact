@@ -44,7 +44,7 @@ export default function ChatPage() {
 
             id: listaDeMensagens.length + 1,
 
-            de: 'vanessametonini',
+            de: "alisson",
 
             texto: novaMensagem,
 
@@ -76,9 +76,9 @@ export default function ChatPage() {
 
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
 
-                backgroundColor: appConfig.theme.colors.primary[500],
+                backgroundColor: appConfig.theme.colors.primary[0],
 
-                backgroundImage: `url(https://virtualbackgrounds.site/wp-content/uploads/2020/08/the-matrix-digital-rain.jpg)`,
+                backgroundImage: `url(https://images6.alphacoders.com/749/749388.jpg)`,
 
                 backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundBlendMode: 'multiply',
 
@@ -356,7 +356,7 @@ function MessageList(props) {
 
                                 }}
 
-                                src={`https://github.com/vanessametonini.png`}
+                                src={`https://github.com/Alissonbosco.png`}
 
                             />
 

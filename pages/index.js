@@ -37,7 +37,7 @@ function Titulo(props) {
 
 export default function PaginaInicial() {
   // const username = 'omariosouto';
-  const [username, setUsername] = React.useState('alissonbosco');
+  const [username, setUsername] = React.useState('');
   const roteamento = useRouter();
 
 
@@ -91,6 +91,7 @@ export default function PaginaInicial() {
             </Text>
 
             <TextField
+             placeholder='Insira o seu Usuario do GitHub...'
             value={username}
             onChange={function (event) {
               console.log('usuario digitou', event.target.value);

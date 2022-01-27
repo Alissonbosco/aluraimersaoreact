@@ -36,10 +36,18 @@ function Titulo(props) {
 // export default HomePage
 
 export default function PaginaInicial() {
-  // const username = 'omariosouto';
-  const [username, setUsername] = React.useState('');
-  const roteamento = useRouter();
+  const gitURL = 'https://github.com/';
+  const apiGithub = 'https://api.github.com/users/';
 
+
+  // Fazer com que o usuário seja variável ao digitar no textField
+  const [username, setUsername] = React.useState('')
+  // const para armazenar a imagem do user
+  const [userImg, setUserImg] = React.useState(`${gitURL}github.png`)
+  // const para nome abaixo da foto
+  const [nameImg, setNameImg] = React.useState('GitHub')
+  // usar nas rotas das pags
+  const roteamento = useRouter();
 
   return (
     <>
@@ -90,8 +98,10 @@ export default function PaginaInicial() {
               {appConfig.name}
             </Text>
 
+    
+            
             <TextField
-             placeholder='Insira o seu Usuario do GitHub...'
+            placeholder='Insira o seu Usuario do GitHub...'
             value={username}
             onChange={function (event) {
               console.log('usuario digitou', event.target.value);
@@ -100,6 +110,24 @@ export default function PaginaInicial() {
               // Trocar o valor da variavel
               // através do React e avise quem precisa
               setUsername(valor);
+               // validar se existe o usuário e pegar a sua foto
+               fetch(`${apiGithub}${valor}`, {method: 'GET'}).then(
+                (retorno) => {
+                    // se existir vai pegar a foto e por o nome no username
+                    if(retorno.status === 200){
+                        console.log('user existe 200')
+                        // Trocar o valor da username
+                        setUsername(valor);
+                        setNameImg(valor)
+                        // Trocar o valor do userImg
+                        setUserImg(`${gitURL}${valor}.png`)
+                    }else if(retorno.status === 404){
+                        setNameImg('User não existe')
+                        setUserImg(`https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4tBbzVZlIvgshAFiNpeCsuFW-UE3dZpnIxQ&usqp=CAU`)
+                    }
+                }
+            )
+            
             }}
               fullWidth
               textFieldColors={{
@@ -110,7 +138,9 @@ export default function PaginaInicial() {
                   backgroundColor: appConfig.theme.colors.neutrals[800],
                 },
               }}
+              
             />
+            
             <Button
               type='submit'
               label='Entrar'

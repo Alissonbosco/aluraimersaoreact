@@ -134,7 +134,7 @@ const validarUsuario = (event) => {
                }}
               
           >
-            <Titulo tag="h2">Bem vindo!</Titulo>
+            <Titulo tag="h2">ONEBET</Titulo>
             <Text variant="body3" styleSheet={{ marginBottom: '32px', color: appConfig.theme.colors.neutrals[300] }}>
               {appConfig.name}
             </Text>
@@ -182,7 +182,7 @@ const validarUsuario = (event) => {
                             borderColor: appConfig.theme.colors.primary['btnHover'],
                             borderRadius: '10px',
                             flex: 1,
-                            minHeight: '240px',
+                            minHeight: '340px',
                         }}
                     >
                         <Image
@@ -201,17 +201,42 @@ const validarUsuario = (event) => {
                                 padding: '1px',
                                 flex: 1,
                             }}
+
+                              
                         >
+                            <Box>                                
+                                <a
+                                target="_blank"
+                                variant="body4"
+                                style={{
+                                    border: 'solid 1px black', padding: '0px 5px',
+                                    borderRadius: '10px', textDecoration: 'none',
+                                    color: appConfig.theme.colors.neutrals['000'],
+                                    fontSize: '15px', cursor: 'pointer', marginTop: '10px'
+                            }}
+                            
+                            href={`https://github.com/${username}`}>
+                            GitHub
+                        </a>
+                            
+                            </Box>
+
+
                             <Text
                                 variant="body4"
                                 styleSheet={{
                                     color: appConfig.theme.colors.neutrals[200],
                                     backgroundColor: appConfig.theme.colors.neutrals[900],
-                                    padding: '1px 10px',
-                                    borderRadius: '1000px'
+                                    padding: '3px 10px',
+                                    borderRadius: '1000px',
+                                    marginTop: '8px'
+                                    
                                 }}
+                                
                             >
-                                usuário: {nameTemp}
+                          
+                            usuário: {nameTemp}
+
                             </Text>
                             <Text
                                 variant="body4"
@@ -223,6 +248,7 @@ const validarUsuario = (event) => {
                                     marginTop: '8px'
                                 }}
                             >
+                                
                                 seguidores: {data.followers}
                             </Text>
                             <Text

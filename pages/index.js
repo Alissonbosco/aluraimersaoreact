@@ -4,8 +4,6 @@ import { useRouter } from 'next/router';
 import appConfig from '../config.json';
 
 
- 
-
 function Titulo(props) {
   const Tag = props.tag || 'h1';
   return (
@@ -36,18 +34,66 @@ function Titulo(props) {
 // export default HomePage
 
 export default function PaginaInicial() {
-  const gitURL = 'https://github.com/';
-  const apiGithub = 'https://api.github.com/users/';
+  
+  const apiGit = 'https://api.github.com/users/';
+  const router = useRouter();
+  const [username, setUsername] = React.useState('');
+  const [nameImg, setNameimg] = React.useState('github');
+  const [validar, setValidar] = React.useState();
+  const [data, setData] = React.useState({ followers: '---', repositories: '---' });
+  const [nameTemp, setnameTemp] = React.useState('empty');
 
+  const notFound = () => {
+    setData({ followers: '---', repositories: '---' })
+    setNameimg('github');
+    setValidar(false);
+    setnameTemp('Not Found');
+}
 
-  // Fazer com que o usuário seja variável ao digitar no textField
-  const [username, setUsername] = React.useState('')
-  // const para armazenar a imagem do user
-  const [userImg, setUserImg] = React.useState(`${gitURL}github.png`)
-  // const para nome abaixo da foto
-  const [nameImg, setNameImg] = React.useState('GitHub')
-  // usar nas rotas das pags
-  const roteamento = useRouter();
+  const checkImg = (valor) => {
+
+    fetch(`${apiGit}${valor}`)
+        .then(async (retorno) => {
+            if (retorno.status === 200) {
+                let infos = await retorno.json()
+                setData({ followers: infos.followers, repositories: infos.public_repos })
+                setNameimg(valor);
+                setValidar(true);
+                setnameTemp(valor);                    
+            } else {
+                notFound();                    
+            }
+        })
+        .catch(function (err) {
+           
+            notFound();
+        });
+}
+
+const validarUsuario = (event) => {
+    const valor = event.target.value;
+    
+
+    setUsername(valor);
+    appConfig.username = valor;
+
+    if (valor.length > 2) {
+        checkImg(valor);
+    } else {
+        setData({ followers: '---', repositories: '---' })
+        notFound();
+    }}
+
+    const login = (event) => {
+      event.preventDefault();
+
+      if (validar) {
+          router.push('/chat');
+      } else {
+          alert('Por favor digite um usuário válido!');
+      }
+
+  }
 
   return (
     <>
@@ -57,10 +103,9 @@ export default function PaginaInicial() {
           backgroundColor: appConfig.theme.colors.primary[0],
            backgroundImage:'url(https://images6.alphacoders.com/749/749388.jpg)',
           backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundBlendMode: 'multiply',
+          backgroundPosition: 'center',
         }}
       >
-
-
 
         <Box
           styleSheet={{
@@ -72,7 +117,7 @@ export default function PaginaInicial() {
               sm: 'row',
             },
             width: '100%', maxWidth: '700px',
-            borderRadius: '5px', padding: '32px', margin: '16px',
+            borderRadius: '8px', padding: '32px', margin: '16px',
             boxShadow: '0 2px 10px 0 rgb(0 0 0 / 20%)',
             backgroundColor: appConfig.theme.colors.neutrals[700],
           }}
@@ -80,67 +125,35 @@ export default function PaginaInicial() {
           {/* Formulário */}
           
           <Box
-              as="form"
-              onSubmit={function (infosDoEvento) {
-                infosDoEvento.preventDefault();
-                console.log('Alguém submeteu o form');
-                roteamento.push('/chat');
-              }}
-            
-            styleSheet={{
-              display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-              width: { xs: '100%', sm: '50%' }, textAlign: 'center', marginBottom: '32px',
-            }}
-          
+               as="form"
+               onSubmit={login}
+               styleSheet={{
+                   display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                   width: { xs: '100%', sm: '50%' }, textAlign: 'center', marginBottom: '32px',
+
+               }}
+              
           >
             <Titulo tag="h2">Bem vindo!</Titulo>
             <Text variant="body3" styleSheet={{ marginBottom: '32px', color: appConfig.theme.colors.neutrals[300] }}>
               {appConfig.name}
             </Text>
-
-    
             
             <TextField
-            placeholder='Insira o seu Usuario do GitHub...'
             value={username}
-            onChange={function (event) {
-              console.log('usuario digitou', event.target.value);
-              // Onde ta o valor?
-              const valor = event.target.value;
-              // Trocar o valor da variavel
-              // através do React e avise quem precisa
-              setUsername(valor);
-               // validar se existe o usuário e pegar a sua foto
-               fetch(`${apiGithub}${valor}`, {method: 'GET'}).then(
-                (retorno) => {
-                    // se existir vai pegar a foto e por o nome no username
-                    if(retorno.status === 200){
-                        console.log('user existe 200')
-                        // Trocar o valor da username
-                        setUsername(valor);
-                        setNameImg(valor)
-                        // Trocar o valor do userImg
-                        setUserImg(`${gitURL}${valor}.png`)
-                    }else if(retorno.status === 404){
-                        setNameImg('User não existe')
-                        setUserImg(`https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4tBbzVZlIvgshAFiNpeCsuFW-UE3dZpnIxQ&usqp=CAU`)
-                    }
-                }
-            )
-            
-            }}
-              fullWidth
-              textFieldColors={{
+            onChange={validarUsuario}
+            placeholder='Digite o seu usuário Github...'
+            fullWidth
+            textFieldColors={{
                 neutral: {
-                  textColor: appConfig.theme.colors.neutrals[200],
-                  mainColor: appConfig.theme.colors.neutrals[900],
-                  mainColorHighlight: appConfig.theme.colors.primary[500],
-                  backgroundColor: appConfig.theme.colors.neutrals[800],
+                    textColor: appConfig.theme.colors.neutrals[200],
+                    mainColor: appConfig.theme.colors.neutrals[900],
+                    mainColorHighlight: appConfig.theme.colors.primary[500],
+                    backgroundColor: appConfig.theme.colors.neutrals[800],
                 },
-              }}
-              
+            }}
             />
-            
+
             <Button
               type='submit'
               label='Entrar'
@@ -158,42 +171,78 @@ export default function PaginaInicial() {
 
           {/* Photo Area */}
           <Box
-            styleSheet={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              maxWidth: '200px',
-              padding: '16px',
-              backgroundColor: appConfig.theme.colors.neutrals[800],
-              border: '1px solid',
-              borderColor: appConfig.theme.colors.neutrals[999],
-              borderRadius: '10px',
-              flex: 1,
-              minHeight: '240px',
-            }}
-          >
-            <Image
-              styleSheet={{
-                borderRadius: '50%',
-                marginBottom: '16px',
-              }}
-              src={`https://github.com/${username}.png`}
-            />
-            <Text
-              variant="body4"
-              styleSheet={{
-                color: appConfig.theme.colors.neutrals[200],
-                backgroundColor: appConfig.theme.colors.neutrals[900],
-                padding: '3px 10px',
-                borderRadius: '1000gipx'
-              }}
-            >
-              {username}
-            </Text>
-          </Box>
-          {/* Photo Area */}
-        </Box>
-      </Box>
-    </>
-  );
+                        styleSheet={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            maxWidth: '200px',
+                            padding: '16px',
+                            backgroundColor: appConfig.theme.colors.neutrals['fundoDivPrincipal'],
+                            border: '1px solid',
+                            borderColor: appConfig.theme.colors.primary['btnHover'],
+                            borderRadius: '10px',
+                            flex: 1,
+                            minHeight: '240px',
+                        }}
+                    >
+                        <Image
+                            styleSheet={{
+                                borderRadius: '50%',
+                                marginBottom: '16px',
+                            }}
+                            src={`https://github.com/${nameImg}.png`}
+                        />
+                        <Box
+                            styleSheet={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                padding: '1px',
+                                flex: 1,
+                            }}
+                        >
+                            <Text
+                                variant="body4"
+                                styleSheet={{
+                                    color: appConfig.theme.colors.neutrals[200],
+                                    backgroundColor: appConfig.theme.colors.neutrals[900],
+                                    padding: '1px 10px',
+                                    borderRadius: '1000px'
+                                }}
+                            >
+                                usuário: {nameTemp}
+                            </Text>
+                            <Text
+                                variant="body4"
+                                styleSheet={{
+                                    color: appConfig.theme.colors.neutrals[200],
+                                    backgroundColor: appConfig.theme.colors.neutrals[900],
+                                    padding: '3px 10px',
+                                    borderRadius: '1000px',
+                                    marginTop: '8px'
+                                }}
+                            >
+                                seguidores: {data.followers}
+                            </Text>
+                            <Text
+                                variant="body4"
+                                styleSheet={{
+                                    color: appConfig.theme.colors.neutrals[200],
+                                    backgroundColor: appConfig.theme.colors.neutrals[900],
+                                    padding: '3px 10px',
+                                    borderRadius: '1000px',
+                                    marginTop: '8px'
+                                }}
+                            >
+                                repositórios: {data.repositories}
+                            </Text>
+                        </Box>
+                    </Box>
+                    {/* Photo Area */}
+
+                </Box>
+            </Box>
+        </>
+    );
 }

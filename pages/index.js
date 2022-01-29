@@ -37,6 +37,7 @@ export default function PaginaInicial() {
   
   const apiGit = 'https://api.github.com/users/';
   const router = useRouter();
+  const roteamento = useRouter();
   const [username, setUsername] = React.useState('');
   const [nameImg, setNameimg] = React.useState('github');
   const [validar, setValidar] = React.useState();
@@ -88,7 +89,7 @@ const validarUsuario = (event) => {
       event.preventDefault();
 
       if (validar) {
-          router.push('/chat');
+          router.push(`/chat?username=${username}`);
       } else {
           alert('Por favor digite um usuário válido!');
       }
@@ -126,12 +127,20 @@ const validarUsuario = (event) => {
           
           <Box
                as="form"
-               onSubmit={login}
+               onSubmit= {login}
+               /*{function (infosDoEvento) {
+                infosDoEvento.preventDefault();
+                console.log('Alguém submeteu o form');
+                // roteamento.push('/chat?username=' + username);
+               // roteamento.push(`/chat?username=${username}`);
+               }}
+               */
                styleSheet={{
                    display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                    width: { xs: '100%', sm: '50%' }, textAlign: 'center', marginBottom: '32px',
-
+                   
                }}
+            
               
           >
             <Titulo tag="h2">ONEBET</Titulo>

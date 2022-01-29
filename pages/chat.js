@@ -2,7 +2,7 @@ import { Box, Text, TextField, Image, Button } from '@skynexui/components';
 import React from 'react';
 import appConfig from '../config.json';
 import { useRouter } from 'next/router';
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from '@supabase/supabase-js'
 import { ButtonSendSticker } from '../src/ButtonSendSticker';
 
 // Como fazer AJAX: https://medium.com/@omariosouto/entendendo-como-fazer-ajax-com-a-fetchapi-977ff20da3c6
@@ -58,25 +58,6 @@ export default function ChatPage() {
       subscription.unsubscribe();
     }
   }, []);
-
-  function handleDeleteMessage(event, mensagemID, mensagemDe) {
-    event.preventDefault();
-    if (user.toUpperCase() === mensagemDe.toUpperCase()) {
-      supabaseClient
-        .from("mensagens")
-        .delete()
-        .match({ id: mensagemID })
-        .then(({ data }) => {
-          const apagarElementoLista = listaDeMensagens.filter(
-            (mensagem) => mensagem.id !== mensagemID
-          );
-          setListaDeMensagens(apagarElementoLista);
-        });
-    } else {
-      window.alert("You can't delete other users messages!");
-    }
-  }
-
 
   function handleNovaMensagem(novaMensagem) {
     const mensagem = {
@@ -135,14 +116,7 @@ export default function ChatPage() {
             padding: '16px',
           }}
         >
-          <MessageList mensagens={listaDeMensagens}
-           deleteMessage={mensagem.delete}
-          
-          
-        />
-
-           
-          
+          <MessageList mensagens={listaDeMensagens} />
           {/* {listaDeMensagens.map((mensagemAtual) => {
                         return (
                             <li key={mensagemAtual.id}>
@@ -189,8 +163,7 @@ export default function ChatPage() {
                 handleNovaMensagem(':sticker: ' + sticker);
               }}
             />
-
-<Button
+              <Button
                             value={mensagem}
                             onClick={(event) => {
                                 event.preventDefault();
@@ -209,6 +182,7 @@ export default function ChatPage() {
                                 marginBottom: '9px'
                             }}
                         />
+            
           </Box>
         </Box>
       </Box>
@@ -301,16 +275,9 @@ function MessageList(props) {
                 mensagem.texto
               )}
 
-             
-            
           </Text>
-          
-          
         );
       })}
     </Box>
-
-    
-    
   )
 }

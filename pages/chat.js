@@ -59,6 +59,25 @@ export default function ChatPage() {
     }
   }, []);
 
+  function handleDeleteMessage(event, mensagemID, mensagemDe) {
+    event.preventDefault();
+    if (user.toUpperCase() === mensagemDe.toUpperCase()) {
+      supabaseClient
+        .from("mensagens")
+        .delete()
+        .match({ id: mensagemID })
+        .then(({ data }) => {
+          const apagarElementoLista = listaDeMensagens.filter(
+            (mensagem) => mensagem.id !== mensagemID
+          );
+          setListaDeMensagens(apagarElementoLista);
+        });
+    } else {
+      window.alert("You can't delete other users messages!");
+    }
+  }
+
+
   function handleNovaMensagem(novaMensagem) {
     const mensagem = {
       // id: listaDeMensagens.length + 1,
@@ -83,8 +102,8 @@ export default function ChatPage() {
     <Box
       styleSheet={{
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        backgroundColor: appConfig.theme.colors.primary[500],
-        backgroundImage: `url(https://virtualbackgrounds.site/wp-content/uploads/2020/08/the-matrix-digital-rain.jpg)`,
+        backgroundColor: appConfig.theme.colors.primary[0],
+        backgroundImage: `url(https://images6.alphacoders.com/749/749388.jpg)`,
         backgroundRepeat: 'no-repeat', backgroundSize: 'cover', backgroundBlendMode: 'multiply',
         color: appConfig.theme.colors.neutrals['000']
       }}
@@ -116,7 +135,14 @@ export default function ChatPage() {
             padding: '16px',
           }}
         >
-          <MessageList mensagens={listaDeMensagens} />
+          <MessageList mensagens={listaDeMensagens}
+           deleteMessage={mensagem.delete}
+          
+          
+        />
+
+           
+          
           {/* {listaDeMensagens.map((mensagemAtual) => {
                         return (
                             <li key={mensagemAtual.id}>
@@ -274,14 +300,17 @@ function MessageList(props) {
               : (
                 mensagem.texto
               )}
-            {/* if mensagem de texto possui stickers:
-                           mostra a imagem
-                        else 
-                           mensagem.texto */}
-            {/* {mensagem.texto} */}
+
+             
+            
           </Text>
+          
+          
         );
       })}
     </Box>
+
+    
+    
   )
 }

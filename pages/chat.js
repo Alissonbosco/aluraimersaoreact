@@ -1,4 +1,4 @@
-import { Box, Text, TextField, Image, Button } from '@skynexui/components';
+import { Box, Text, TextField, Image, Button, Icon } from '@skynexui/components';
 import React from 'react';
 import appConfig from '../config.json';
 import { useRouter } from 'next/router';
@@ -31,20 +31,10 @@ export default function ChatPage() {
       .select('*')
       .order('id', { ascending: false })
       .then(({ data }) => {
-        // console.log('Dados da consulta:', data);
         setListaDeMensagens(data);
       });
 
-    const subscription = escutaMensagensEmTempoReal((novaMensagem) => {
-      console.log('Nova mensagem:', novaMensagem);
-      console.log('listaDeMensagens:', listaDeMensagens);
-      // Quero reusar um valor de referencia (objeto/array) 
-      // Passar uma função pro setState
-
-      // setListaDeMensagens([
-      //     novaMensagem,
-      //     ...listaDeMensagens
-      // ])
+    const subscription = escutaMensagensEmTempoReal((novaMensagem) => {    
       setListaDeMensagens((valorAtualDaLista) => {
         console.log('valorAtualDaLista:', valorAtualDaLista);
         return [
@@ -61,7 +51,6 @@ export default function ChatPage() {
 
   function handleNovaMensagem(novaMensagem) {
     const mensagem = {
-      // id: listaDeMensagens.length + 1,
       de: usuarioLogado,
       texto: novaMensagem,
     };
@@ -69,7 +58,7 @@ export default function ChatPage() {
     supabaseClient
       .from('mensagens')
       .insert([
-        // Tem que ser um objeto com os MESMOS CAMPOS que você escreveu no supabase
+        
         mensagem
       ])
       .then(({ data }) => {
@@ -77,6 +66,19 @@ export default function ChatPage() {
       });
 
     setMensagem('');
+  }
+
+  function handleDeletaMensagem(mensagemAtual) {
+    supabaseClient
+      .from("mensagens")
+      .delete()
+      .match({ id: mensagemAtual.id })
+      .then(({ data }) => {
+        const listaDeMensagensFiltrada = listaDeMensagens.filter((mensagem) => {
+          return mensagem.id != data[0].id;
+        });
+        setListaDeMensagens(listaDeMensagensFiltrada);
+      });
   }
 
   return (
@@ -116,14 +118,11 @@ export default function ChatPage() {
             padding: '16px',
           }}
         >
-          <MessageList mensagens={listaDeMensagens} />
-          {/* {listaDeMensagens.map((mensagemAtual) => {
-                        return (
-                            <li key={mensagemAtual.id}>
-                                {mensagemAtual.de}: {mensagemAtual.texto}
-                            </li>
-                        )
-                    })} */}
+          <MessageList
+            mensagens={listaDeMensagens}
+            handleDeletaMensagem={handleDeletaMensagem}
+          />
+         
           <Box
             as="form"
             styleSheet={{
@@ -156,10 +155,9 @@ export default function ChatPage() {
                 color: appConfig.theme.colors.neutrals[200],
               }}
             />
-            {/* CallBack */}
+            
             <ButtonSendSticker
               onStickerClick={(sticker) => {
-                // console.log('[USANDO O COMPONENTE] Salva esse sticker no banco', sticker);
                 handleNovaMensagem(':sticker: ' + sticker);
               }}
             />
@@ -209,17 +207,19 @@ function Header() {
 }
 
 function MessageList(props) {
-  // console.log(props);
+  console.log("MessageList", props);
+
+  const handleDeletaMensagem = props.handleDeletaMensagem;
   return (
     <Box
       tag="ul"
       styleSheet={{
-        overflow: 'scroll',
-        display: 'flex',
-        flexDirection: 'column-reverse',
+        overflow: "auto",
+        overflowX: "hidden",
+        display: "flex",
+        flexDirection: "column-reverse",
         flex: 1,
-        color: appConfig.theme.colors.neutrals["000"],
-        marginBottom: '16px',
+        marginBottom: "16px",
       }}
     >
       {props.mensagens.map((mensagem) => {
@@ -228,14 +228,18 @@ function MessageList(props) {
             key={mensagem.id}
             tag="li"
             styleSheet={{
-              borderRadius: '5px',
-              padding: '6px',
-              marginBottom: '12px',
+              borderRadius: "5px",
+              padding: "6px",
+              marginBottom: "12px",
+              color: appConfig.theme.colors.primary[930],
               hover: {
-                backgroundColor: appConfig.theme.colors.neutrals[700],
-              }
+                backgroundColor: appConfig.theme.colors.primary[940],
+              },
+              wordBreak: "break-word",
             }}
           >
+
+
             <Box
               styleSheet={{
                 marginBottom: '8px',
@@ -264,9 +268,27 @@ function MessageList(props) {
               >
                 {(new Date().toLocaleDateString())}
               </Text>
+
+              <Icon
+                  name={"FaTrash"}
+                  styleSheet={{
+                    marginLeft: "5px",
+                    width: "15px",
+                    height: "15px",
+                    color: appConfig.theme.colors.primary["950"],
+                    hover: {
+                    color: "white",
+                  },
+                  display: "inline-block",
+                }}
+                onClick={(event) => {
+                  event.preventDefault();
+                  handleDeletaMensagem(mensagem);
+                }}
+              />
+
             </Box>
-            {/* [Declarativo] */}
-            {/* Condicional: {mensagem.texto.startsWith(':sticker:').toString()} */}
+            
             {mensagem.texto.startsWith(':sticker:')
               ? (
                 <Image src={mensagem.texto.replace(':sticker:', '')} />
@@ -279,5 +301,5 @@ function MessageList(props) {
         );
       })}
     </Box>
-  )
+  );
 }

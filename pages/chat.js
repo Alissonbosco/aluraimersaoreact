@@ -41,7 +41,7 @@ export default function ChatPage() {
           novaMensagem,
           ...valorAtualDaLista,
         ]
-      });
+      }); 
     });
 
     return () => {
@@ -277,7 +277,7 @@ function MessageList(props) {
                     height: "15px",
                     color: appConfig.theme.colors.primary["950"],
                     hover: {
-                    color: "white",
+                    color: "red",
                   },
                   display: "inline-block",
                 }}
@@ -288,7 +288,7 @@ function MessageList(props) {
               />
 
             </Box>
-            
+
             {mensagem.texto.startsWith(':sticker:')
               ? (
                 <Image src={mensagem.texto.replace(':sticker:', '')} />

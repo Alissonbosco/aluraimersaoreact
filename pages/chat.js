@@ -98,7 +98,7 @@ export default function ChatPage() {
           flex: 1,
           boxShadow: '0 2px 10px 0 rgb(0 0 0 / 20%)',
           borderRadius: '5px',
-          backgroundColor: appConfig.theme.colors.neutrals[700],
+          backgroundColor: appConfig.theme.colors.neutrals[90],
           height: '100%',
           maxWidth: '95%',
           maxHeight: '95vh',
@@ -112,7 +112,7 @@ export default function ChatPage() {
             display: 'flex',
             flex: 1,
             height: '80%',
-            backgroundColor: appConfig.theme.colors.neutrals[600],
+            backgroundColor: appConfig.theme.colors.neutrals[0],
             flexDirection: 'column',
             borderRadius: '5px',
             padding: '16px',
@@ -171,9 +171,9 @@ export default function ChatPage() {
                             label='Enviar'
                             buttonColors={{
                                 contrastColor: appConfig.theme.colors.neutrals["000"],
-                                mainColor: appConfig.theme.colors.primary['200'],
-                                mainColorLight: appConfig.theme.colors.primary['100'],
-                                mainColorStrong: appConfig.theme.colors.primary['100'],
+                                mainColor: appConfig.theme.colors.primary['400'],
+                                mainColorLight: appConfig.theme.colors.primary['200'],
+                                mainColorStrong: appConfig.theme.colors.primary['200'],
                             }}
                             styleSheet={{
                                 padding: '12px',
@@ -197,7 +197,7 @@ function Header() {
         </Text>
         <Button
           variant='tertiary'
-          colorVariant='neutral'
+          color='red'
           label='Logout'
           href="/"
         />

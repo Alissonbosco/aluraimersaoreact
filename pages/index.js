@@ -128,13 +128,6 @@ const validarUsuario = (event) => {
           <Box
                as="form"
                onSubmit= {login}
-               /*{function (infosDoEvento) {
-                infosDoEvento.preventDefault();
-                console.log('Alguém submeteu o form');
-                // roteamento.push('/chat?username=' + username);
-               // roteamento.push(`/chat?username=${username}`);
-               }}
-               */
                styleSheet={{
                    display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                    width: { xs: '100%', sm: '50%' }, textAlign: 'center', marginBottom: '32px',
@@ -151,7 +144,7 @@ const validarUsuario = (event) => {
             <TextField
             value={username}
             onChange={validarUsuario}
-            placeholder='Digite o seu usuário Github...'
+            placeholder='Digite o seu usuário do Github...'
             fullWidth
             textFieldColors={{
                 neutral: {
